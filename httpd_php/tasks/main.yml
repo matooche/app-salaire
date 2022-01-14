@@ -32,6 +32,17 @@
     state: started
     enabled: true
 
+<<<<<<< HEAD
+=======
+- name: Open HTTP port on firewalld
+  firewalld:
+    port: 80/tcp
+    permanent: yes
+    state: enabled
+  notify:
+    - restart_firewalld
+
+>>>>>>> 134736d84881d8416eca3c3f0f64d8d920b408c5
 - name: Remove default httpd site
   file: 
     path: "{{ httpd_dir }}/conf.d/welcome.conf" 
