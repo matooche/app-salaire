@@ -1,0 +1,73 @@
+---
+# tasks file for httpd_php
+#
+
+- name: Install httpd
+  yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - httpd
+    - php
+    - php-mysql
+
+- name: Start and enable httpd service
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+#- name: Remove default httpd site
+#  file: 
+#    path: "{{ item }}" 
+#    state: absent
+#  with_items:
+#    - "/home/{{ user }}/project"
+#    - "{{ nginx_dir }}/sites-enabled/default.conf"
+#    - "{{ nginx_dir }}/sites-available/default.conf"
+
+- name: Create website root folders
+  file: 
+    path: "{{ sites_root }}/{{ item.name }}/html/"
+    state: directory
+    mode: 755
+  with_items: "{{ projects }}"
+
+- name: Setup httpd folders
+  file: 
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ httpd_dir }}/sites-available"
+    - "{{ httpd_dir }}/sites-enabled"
+
+- name: Setup httpd server conf
+  template:
+    src: templates/httpd.conf.j2
+    dest: "{{ httpd_dir }}/conf/httpd.conf"
+
+- name: Setup vhost
+  template:
+    src: templates/vhost.conf.j2 
+    dest: "{{ httpd_dir }}/sites-available/{{ item.name }}.conf"
+  with_items: "{{ projects }}"
+
+#- name: Setup website content
+#  template: 
+#    src: templates/index.html.j2 
+#    dest: "{{ sites_root }}/{{ item.name }}/html/index.html"
+#  with_items: "{{ projects }}"
+
+#- name: Create folders for sites and upstreams
+#  file: 
+#    path: "{{ nginx_dir }}/sites"
+#    state: directory
+
+- name: Create symlinks for sites-enabled
+  file: 
+    state: link 
+    src: "{{ httpd_dir }}/sites-available/{{ item.name }}.conf"
+    dest: "{{ httpd_dir }}/sites-enabled/{{ item.name }}.conf"
+  with_items: "{{ projects }}"
+  notify:
+    - restart_httpd

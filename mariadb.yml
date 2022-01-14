@@ -1,0 +1,15 @@
+---
+- name: use mariadb role playbook
+  hosts: db
+  become: true
+
+  pre_tasks:
+    - debug:
+        msg: 'Beginning db server configuration.'
+
+  roles:
+    - role: mariadb
+
+  post_tasks:
+    - debug:
+        msg: 'Db server has been configured.'

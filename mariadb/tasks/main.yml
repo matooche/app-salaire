@@ -1,0 +1,29 @@
+---
+# tasks file for mariadb
+#
+
+- name: Add epel-release repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install mariadb
+  yum:
+    name: 
+      - mariadb-server
+      - python2-PyMySQL
+    state: latest
+
+- name: Start and enable mariadb service
+  service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: MariaDB client file
+  copy:
+    dest: /root/my.cnf
+    content: |
+      [client]
+      user=root
+      password=""

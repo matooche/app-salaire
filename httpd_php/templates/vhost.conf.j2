@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+    DocumentRoot "/var/www/{{ item.name }}/html"
+    ServerName "{{ item.name }}"
+    <Directory /var/www/{{ item.name }}/html>
+        AllowOverride All
+        Options +FollowSymlinks
+    </Directory>
+ 
+    DirectoryIndex index.html index.php index.htm
+</VirtualHost>

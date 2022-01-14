@@ -1,0 +1,11 @@
+---
+# vars file for httpd_php
+#
+#
+
+domain: matys.form
+
+projects:
+  - name: app-salaire
+    port: 80
+
