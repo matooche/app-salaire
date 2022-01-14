@@ -6,7 +6,6 @@
   selinux:
     state: disabled
 
-<<<<<<< HEAD
 - name: Open MariaDB port on firewalld
   firewalld:
     port: 3306/tcp
@@ -18,8 +17,6 @@
 - name: Reboot host
   reboot:
 
-=======
->>>>>>> 134736d84881d8416eca3c3f0f64d8d920b408c5
 - name: Add epel-release repo
   yum:
     name: epel-release
@@ -32,17 +29,6 @@
       - python2-PyMySQL
     state: latest
 
-<<<<<<< HEAD
-=======
-- name: Open MariaDB port on firewalld
-  firewalld:
-    port: 3306/tcp
-    permanent: yes
-    state: enabled
-  notify: 
-    - restart_firewalld
-
->>>>>>> 134736d84881d8416eca3c3f0f64d8d920b408c5
 - name: Start and enable mariadb service
   service:
     name: mariadb
