@@ -1,6 +1,6 @@
 ---
 - name: use mariadb role playbook
-  hosts: db
+  hosts: 192.168.5.176
   become: true
 
   pre_tasks:
@@ -16,7 +16,7 @@
 
 
 - name: use httpd_php role playbook
-  hosts: web
+  hosts: 192.168.5.177
   become: true
 
   pre_tasks:
