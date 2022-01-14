@@ -1,2 +1,7 @@
 ---
 # vars file for mariadb
+#
+
+mysql_user: web
+mysql_password: web
+mysql_dbname: app-salaire

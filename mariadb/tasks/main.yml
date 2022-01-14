@@ -2,6 +2,21 @@
 # tasks file for mariadb
 #
 
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
+- name: Open MariaDB port on firewalld
+  firewalld:
+    port: 3306/tcp
+    permanent: yes
+    state: enabled
+  notify: 
+    - restart_firewalld
+
+- name: Reboot host
+  reboot:
+
 - name: Add epel-release repo
   yum:
     name: epel-release
@@ -14,12 +29,6 @@
       - python2-PyMySQL
     state: latest
 
-- name: Open MariaDB port on firewalld
-  firewalld:
-    port: 3306/tcp
-    permanent: yes
-    state: enabled
-
 - name: Start and enable mariadb service
   service:
     name: mariadb
@@ -28,8 +37,9 @@
 
 - name: MariaDB client file
   copy:
-    dest: /root/my.cnf
+    dest: /root/.my.cnf
     content: |
       [client]
       user=root
-      password="root"
+      password=""
+

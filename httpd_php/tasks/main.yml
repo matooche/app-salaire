@@ -2,6 +2,10 @@
 # tasks file for httpd_php
 #
 
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
 - name: Install httpd
   yum:
     name: "{{ item }}"
@@ -11,26 +15,27 @@
     - php
     - php-mysql
 
+- name: Open HTTP port on firewalld
+  firewalld:
+    port: 80/tcp
+    permanent: yes
+    state: enabled
+  notify:
+    - restart_firewalld
+
+- name: Reboot host
+  reboot:
+
 - name: Start and enable httpd service
   service:
     name: httpd
     state: started
     enabled: true
 
-- name: Open HTTP port on firewalld
-  firewalld:
-    service: http
-    permanent: yes
-    state: enabled
-
-#- name: Remove default httpd site
-#  file: 
-#    path: "{{ item }}" 
-#    state: absent
-#  with_items:
-#    - "/home/{{ user }}/project"
-#    - "{{ nginx_dir }}/sites-enabled/default.conf"
-#    - "{{ nginx_dir }}/sites-available/default.conf"
+- name: Remove default httpd site
+  file: 
+    path: "{{ httpd_dir }}/conf.d/welcome.conf" 
+    state: absent
 
 - name: Create website root folders
   file: 
@@ -41,8 +46,15 @@
 
 - name: Copy application files
   template:
-    src: templates/create_db.php.j2
-    dest: "{{ sites_root }}/{{ item.name }}/html/create_db.php"
+    src: "templates/{{ item.src }}"
+    dest: "{{ sites_root }}/app-salaire/html/{{ item.dest }}"
+  loop:
+    - { src: "create_db.php.j2", dest: "create_db.php" }
+    - { src: "create_table.php.j2", dest: "create_table.php" }
+    - { src: "getting_data.php.j2", dest: "getting_data.php" }
+    - { src: "insert_data.php.j2", dest: "insert_data.php" }
+    - { src: "remove_data.php.j2", dest: "remove_data.php" }
+    - { src: "remove_db.php.j2", dest: "remove_db.php" }
 
 - name: Setup httpd folders
   file: 
@@ -80,5 +92,8 @@
     src: "{{ httpd_dir }}/sites-available/{{ item.name }}.conf"
     dest: "{{ httpd_dir }}/sites-enabled/{{ item.name }}.conf"
   with_items: "{{ projects }}"
-  notify:
-    - restart_httpd
+
+- name: Restart httpd
+  service:
+    name: httpd
+    state: restarted

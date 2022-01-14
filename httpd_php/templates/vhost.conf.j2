@@ -1,9 +1,10 @@
 <VirtualHost *:80>
     DocumentRoot "/var/www/{{ item.name }}/html"
-    ServerName "{{ item.name }}"
+    ServerName "{{ item.name }}.{{ domain_name }}"
     <Directory /var/www/{{ item.name }}/html>
         AllowOverride All
-        Options +FollowSymlinks
+	Options All Indexes 
+	Require all granted
     </Directory>
  
     DirectoryIndex index.html index.php index.htm

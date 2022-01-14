@@ -1,4 +1,4 @@
 user: httpd 
 httpd_dir: /etc/httpd
 sites_root: /var/www
-domain: matys.form
+domain_name: matys.form
