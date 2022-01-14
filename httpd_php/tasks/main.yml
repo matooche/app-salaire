@@ -17,6 +17,12 @@
     state: started
     enabled: true
 
+- name: Open HTTP port on firewalld
+  firewalld:
+    service: http
+    permanent: yes
+    state: enabled
+
 #- name: Remove default httpd site
 #  file: 
 #    path: "{{ item }}" 
@@ -32,6 +38,11 @@
     state: directory
     mode: 755
   with_items: "{{ projects }}"
+
+- name: Copy application files
+  template:
+    src: templates/create_db.php.j2
+    dest: "{{ sites_root }}/{{ item.name }}/html/create_db.php"
 
 - name: Setup httpd folders
   file: 

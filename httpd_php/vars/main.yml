@@ -1,7 +1,9 @@
 ---
 # vars file for httpd_php
 #
-#
+dbhost: 192.168.5.176
+dbuser: "root"
+dbpwd: "root"
 
 domain: matys.form
 
