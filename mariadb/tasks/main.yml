@@ -2,6 +2,10 @@
 # tasks file for mariadb
 #
 
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
 - name: Add epel-release repo
   yum:
     name: epel-release
@@ -19,6 +23,8 @@
     port: 3306/tcp
     permanent: yes
     state: enabled
+  notify: 
+    - restart_firewalld
 
 - name: Start and enable mariadb service
   service:
@@ -28,8 +34,9 @@
 
 - name: MariaDB client file
   copy:
-    dest: /root/my.cnf
+    dest: /root/.my.cnf
     content: |
       [client]
       user=root
-      password="root"
+      password=""
+
